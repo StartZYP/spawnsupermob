@@ -1,0 +1,5 @@
+name: SpawnMob
+main: com.github.qq44920040.getmobs.main
+version: 1.0
+commands:
+  getmobs:
