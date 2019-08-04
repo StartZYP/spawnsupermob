@@ -4,11 +4,13 @@ public class MobEntity {
     int Damage;
     String Playername;
     boolean Nodamage;
+    String Cmd;
 
-    public MobEntity(int damage, String playername, boolean nodamage) {
+    public MobEntity(int damage, String playername, boolean nodamage,String cmd) {
         Damage = damage;
         Playername = playername;
         Nodamage = nodamage;
+        Cmd = cmd;
     }
 
     public int getDamage() {
@@ -17,6 +19,9 @@ public class MobEntity {
 
     public String getPlayername() {
         return Playername;
+    }
+    public String getCmd(){
+        return Cmd;
     }
 
     public boolean isNodamage() {

@@ -1,9 +1,11 @@
 package com.github.qq44920040.getmobs;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,10 +20,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Set;
 
 public class main extends JavaPlugin implements Listener {
 
     private HashMap<Integer,MobEntity> DamgeMap = new HashMap<>();
+    private HashMap<String,String> CmdMap = new HashMap<>();
 
     @Override
     public void onDisable() {
@@ -32,7 +36,7 @@ public class main extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         final Player player = (Player) sender;
         //&&sender.hasPermission("spawnsupermob.use")
-        if (args.length==11&&sender.hasPermission("spawnsupermob.use")){
+        if (args.length==12&&sender.hasPermission("spawnsupermob.use")){
             String[] split = args[0].split("\\|");
             int Damage = Integer.parseInt(args[1]);
             int Health = Integer.parseInt(args[2]);
@@ -44,7 +48,7 @@ public class main extends JavaPlugin implements Listener {
             final LivingEntity entity = (LivingEntity)player.getWorld().spawnEntity(new Location(player.getWorld(),Double.parseDouble(split[0]),Double.parseDouble(split[1]),Double.parseDouble(split[2])), entityType);
             final int entityId = entity.getEntityId();
             entity.addPotionEffect(new PotionEffect(PotionEffectType.getById(Integer.parseInt(args[8])),Integer.parseInt(args[9]),Integer.parseInt(args[10])),true);
-            DamgeMap.put(entityId,new MobEntity(Damage,sender.getName(),onDamage));
+            DamgeMap.put(entityId,new MobEntity(Damage,sender.getName(),onDamage,args[11]));
             entity.setMaxHealth((double) Health);
             entity.setHealth((double) Health);
             entity.setCustomNameVisible(true);
@@ -87,7 +91,7 @@ public class main extends JavaPlugin implements Listener {
         if (DamgeMap.containsKey(entityId)){
             Player killer = event.getEntity().getKiller();
             MobEntity mobEntity = DamgeMap.get(entityId);
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),getConfig().getString("KillCmd").replace("{Killername}",killer.getName()).replace("{MobMaster}",mobEntity.getPlayername()));
+            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),mobEntity.getCmd().replace("{Killername}",killer.getName()).replace("{MobMaster}",mobEntity.getPlayername()));
         }
     }
 
@@ -112,13 +116,18 @@ public class main extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
-        if (!getDataFolder().exists()) {
-            getDataFolder().mkdir();
-        }
-        File file = new File(getDataFolder(),"config.yml");
-        if (!file.exists()){
-            saveDefaultConfig();
-        }
+//        if (!getDataFolder().exists()) {
+//            getDataFolder().mkdir();
+//        }
+//        File file = new File(getDataFolder(),"config.yml");
+//        if (!file.exists()){
+//            saveDefaultConfig();
+//        }
+//        Set<String> luckboxpools = getConfig().getConfigurationSection("luckboxpool").getKeys(false);
+//        for (String temp:luckboxpools){
+//            CmdMap.put(temp,getConfig().getString("MobCmd."+temp));
+//            Log.trace("命令载入:"+getConfig().getString("MobCmd."+temp));
+//        }
         Bukkit.getServer().getPluginManager().registerEvents(this,this);
         super.onEnable();
     }
